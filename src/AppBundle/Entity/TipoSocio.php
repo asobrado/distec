@@ -8,10 +8,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * DeviceType.
  *
- * @ORM\Table(name="DeviceType")
+ * @ORM\Table(name="tipos_socios")
  * @ORM\Entity
  */
-class DeviceType
+class TipoSocio
 {
     /**
      * @var int
@@ -27,28 +27,23 @@ class DeviceType
      *
      * @Assert\NotNull(message="Debes ingresar el nombre del tipo")
      *
-     * @ORM\Column(name="name", type="string", length=100, nullable=false)
+     * @ORM\Column(name="nombre", type="string", length=100, nullable=false)
      */
-    private $name;
+    private $nombre;
 
     /**
      * @var string
      *
      * @Assert\NotNull(message="Debes ingresar una descripción del tipo")
      *
-     * @ORM\Column(name="description", type="text", nullable=false)
+     * @ORM\Column(name="descripcion", type="text", nullable=false)
      */
-    private $description;
-
-    public function __toString()
-    {
-        return $this->getName();
-    }
+    private $descripcion;
 
     /**
-     * Get id.
+     * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -56,50 +51,50 @@ class DeviceType
     }
 
     /**
-     * Set name.
+     * Set nombre
      *
-     * @param string $name
+     * @param string $nombre
      *
-     * @return DeviceType
+     * @return TipoSocio
      */
-    public function setName($name)
+    public function setNombre($nombre)
     {
-        $this->name = $name;
+        $this->nombre = $nombre;
 
         return $this;
     }
 
     /**
-     * Get name.
+     * Get nombre
      *
      * @return string
      */
-    public function getName()
+    public function getNombre()
     {
-        return $this->name;
+        return $this->nombre;
     }
 
     /**
-     * Set description.
+     * Set descripcion
      *
-     * @param string $description
+     * @param string $descripcion
      *
-     * @return DeviceType
+     * @return TipoSocio
      */
-    public function setDescription($description)
+    public function setDescripcion($descripcion)
     {
-        $this->description = $description;
+        $this->descripcion = $descripcion;
 
         return $this;
     }
 
     /**
-     * Get $this->description.
+     * Get descripcion
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescripcion()
     {
-        return $this->description;
+        return $this->descripcion;
     }
 }
