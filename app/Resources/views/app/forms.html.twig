@@ -1,0 +1,174 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block choice_widget_collapsed %}
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {{ parent() }}
+{% endblock choice_widget_collapsed %}
+
+{% block textarea_widget %}
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {{ parent() }}
+{% endblock textarea_widget %}
+
+{% block form_widget_simple %}
+    {% spaceless %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+        {% set type = type|default('text') %}
+
+
+        {{ parent() }}
+    {% endspaceless %}
+{% endblock form_widget_simple %}
+
+{% block form_label %}
+    {% spaceless %}
+        {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ ' control-label col-lg-3 col-md-3 col-sm-3 col-xs-12'}) %}
+        {{ parent() }}
+    {% endspaceless %}
+{% endblock form_label %}
+
+{% block money_widget %}
+    {% spaceless %}
+        <div class="input-group">
+            <span class="input-group-addon">{{ money_pattern|replace({'{{ widget }}': ''}) }}</span>
+            {{ block('form_widget_simple') }}
+        </div>
+    {% endspaceless %}
+{% endblock money_widget %}
+
+{% block percent_widget %}
+    {% spaceless %}
+        <div class="input-group">
+            <span class="input-group-addon">%</span>
+            {{ block('form_widget_simple') }}
+        </div>
+    {% endspaceless %}
+{% endblock percent_widget %}
+
+{% block datetime_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div class="form-group">
+                {{ form_widget(form.date) }}
+                {{ form_widget(form.time) }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock datetime_widget %}
+
+{% block date_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            {{ '{{ year }} / {{ month }} / {{ day }}'|replace({
+                '{{ year }}':  form_widget(form.year, {'attr': {'style': 'display: inline; width: 100px;'}}),
+                '{{ month }}': form_widget(form.month, {'attr': {'style': 'display: inline; width: 100px;'}}),
+                '{{ day }}':   form_widget(form.day, {'attr': {'style': 'display: inline; width: 100px;'}}),
+            })|raw }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock date_widget %}
+
+{% block time_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            {% set vars = widget == 'text' ? { 'attr': { 'size': 1, 'style': 'width: 60px; display: inline;' }} : { 'attr': {'style': 'display: inline; width: 100px;'}} %}
+            &nbsp;{{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %} {{ form_widget(form.second, vars) }}{% endif %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock time_widget %}
+
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-group{% if errors|length > 0 %} has-error{% endif %}">
+            {{ form_label(form) }}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                {{ form_widget(form) }}
+                {% for error in errors %}
+                    <span class="help-block form-error">
+                {{
+                error.messagePluralization is null
+                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+                }}
+            </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            {% for error in errors %}
+                <div class="alert alert-danger">{{ error.message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block sylius_shipping_method_choice_widget %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }}>
+            {% for child in form %}
+                <div>
+                    {% if shipping_costs[child.vars.value] is defined %}
+                        <span class="pull-right text-muted">{{ shipping_costs[child.vars.value] }}</span>
+                    {% endif %}
+                    <label{% for attrname, attrvalue in child.vars.label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                    {{ form_widget(child) }}
+                    {{ child.vars.label|trans({}, translation_domain) }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
+{% block document_widget %}
+    {% spaceless %}
+        {{ form_widget(form) }}
+
+        {% if document_path is not null and is_image is defined %}
+            <a href="{{ asset(document_path) }}" target="_blank" class="thumbnail">
+                <img src="{{ asset(document_path) }}" >
+            </a>
+            {% if allow_delete and delete_url != '' %}
+            <a class="btn btn-danger" href="{{ delete_url }}">
+                <i class="fa fa-trash"></i> Eliminar imagen
+            </a>
+            {% endif %}
+        {% elseif document_path is not null %}
+            <p>
+                <i class="fa fa-download"></i> Descargar archivo:
+                <a href="{{ asset(document_path) }}" target="_blank">
+                    {{ name }}
+                </a>
+            </p>
+
+        {% endif %}
+        <hr>
+    {% endspaceless %}
+{% endblock document_widget %}
+
+{% block despiece_widget %}
+    {% spaceless %}
+        {% if has_despiece %}
+            <p>
+                <a class="btn btn-info" target="_blank" href="{{ path('front_productos_despiece', {'slug': prod_slug }) }}">Ver Despiece</a>
+                <a href="{{ path('productos_delete_despiece', {'id': despiece_id }) }}" class="btn btn-danger">Eliminar Despiece</a>
+            </p>
+        {% else %}
+            <div class="alert alert-info">
+                El producto no tiene despiece todavia.
+            </div>
+        {% endif %}
+        {{ form_widget(form) }}
+    {% endspaceless %}
+{% endblock %}

@@ -1,0 +1,14 @@
+.table_function {
+    float: left;
+}
+
+.site_title{
+    padding-left: 0;
+    text-align: center;
+}
+
+.form-control{
+    margin-bottom: 13px;
+    padding: 4px 10px;
+    height: 29px;
+}

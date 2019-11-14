@@ -1,0 +1,55 @@
+{% extends ':app:list.html.twig' %}
+
+{% block page_breadcrumb %}
+    {{ parent() }}
+    <li>
+        Tipo de Socios
+    </li>
+{% endblock %}
+
+{% block acciones %}
+    {% embed ':app:list_actions.html.twig' %}
+        {% block links_acciones %}
+            <a href="{{ path('tiposocio_new') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block listado -%}
+
+    <div class="x_content">
+        <br>
+        <div class="table-responsive">
+            <table id="datatable" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for type in tipoSocios %}
+                    <tr>
+                        <td>{{ type.nombre }}</td>
+                        <td>{{ type.descripcion }}</td>
+                        <td>
+                            <a class="table_function btn btn-warning btn-sm"  href="{{ path('tiposocio_edit', {'id': type.id}) }}"><span class="fa fa-pencil fontsize16" data-toggle="tooltip"  data-placement="top" data-original-title="Editar" title="Editar tipo de Socio"></span></a>
+
+                            <form class="table_function" id="delete_{{ type.id }}" action="{{ path('tiposocio_delete', { 'id': type.id }) }}" method="POST">
+                                <a class="btn btn-danger btn-sm" href="javascript:bootbox.confirm('¿Está seguro que desea ELIMINAR al tipo de Socio {{ type.nombre }}? <br> Esta acción no podrá ser deshecha', function (result) {if (result){document.getElementById('delete_{{ type.id}}').submit()}});">
+                                    <span class="fa fa-times-circle fontsize16" data-toggle="tooltip" data-placement="top" title="Eliminar"></span>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {#<div class="navigation">
+        {{ knp_pagination_render(espacios) }}
+    </div>#}
+{% endblock %}
